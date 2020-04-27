@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Title</title>
+        <script src="jquery.js"></script>
+        <script src="area.js"></script>
+    </head>
+    <body>
+        <select name="" id="province" onchange="changeProvince(this)">
+            <option value="请选择">请选择</option>
+        </select>
+
+        <select name="" id="city" onchange="changeCity(this)">
+            <option value="">---</option>
+        </select>
+
+        <select name="" id="area">
+            <option value="">---</option>
+        </select>
+
+        <script>
+            let province = document.querySelector('#province')
+            let city = document.querySelector('#city')
+            let area = document.querySelector('#area')
+
+            // 渲染省份数据
+            for (let i in provinceList) {
+                province.add(new Option(provinceList[i].name, provinceList[i].name))
+            }
+
+
+            // 当省份发生改变
+            function changeProvince(self) {
+                // 清空 市和县/区 的选项
+                city.length = 0
+                area.length = 0
+
+                // 遍历所有省份
+                for (let i in provinceList) {
+                    // 找到和当前省份对应的数据
+                    if (self.value === provinceList[i].name) {
+                        // 初始化市和区/县的选项
+                        city.add(new Option('---', '---'))
+                        area.add(new Option('---', '---'))
+                        // 遍历当前省所有的市
+                        for (let j in provinceList[i].cityList) {
+                            // 如果当前选选择的是有效的市，而非 ---
+                            if (provinceList[i].cityList[j].name) {
+                                // 渲染市的数据
+                                city.add(new Option(provinceList[i].cityList[j].name,provinceList[i].cityList[j].name))
+                            }
+                        }
+
+                    }
+                }
+                // 当省份发生改变同时也触发市改变的方法
+                changeCity(city)
+            }
+
+            // 当选择的市发生改变
+            function changeCity(self) {
+                // 清空区/县的选项
+                area.length = 0
+                // 遍历所有的省
+                for (let i in provinceList) {
+                    // 遍历各个省里的所有市
+                    for (let j in provinceList[i].cityList) {
+                        // 如果找到了符合的市
+                        if (self.value === provinceList[i].cityList[j].name) {
+                            // 遍历符合条件的市下面所有的区/县
+                            for (let k in provinceList[i].cityList[j].areaList) {
+                                // 渲染区/县数据
+                                area.add(new Option(provinceList[i].cityList[j].areaList[k], provinceList[i].cityList[j].areaList[k]))
+                            }
+                        }
+                    }
+                }
+            }
+
+        </script>
+    </body>
+</html>
